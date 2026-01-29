@@ -44,4 +44,8 @@ public class PatientTest {
         profileRepo.findByEmailAndPassword(authDTO.getEmail(),authDTO.getPassword());
     }
 
+    @Test
+    public void findByUsername(){
+        profileRepo.findByEmail("neeraj@gmail.com");
+    }
 }

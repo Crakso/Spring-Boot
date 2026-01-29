@@ -1,15 +1,9 @@
 package com.todomanager.todos.Config;
 
-import com.todomanager.todos.DTO.AuthDTO;
-import com.todomanager.todos.Entity.ProfileEntity;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,12 +20,15 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
-         httpSecurity.cors(Customizer.withDefaults())
-                //Configure cross site Request forgery protection
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth-> auth.requestMatchers("/todo/**","/login","/profile/**").permitAll()
-                        .anyRequest().authenticated())
-                .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+         httpSecurity
+//                 .cors(Customizer.withDefaults())
+//                Configure cross site Request forgery protection
+//                .csrf(AbstractHttpConfigurer::disable)
+//                .sessionManagement(session-> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                 .csrf(csrfConfig-> csrfConfig.disable())
+                 .sessionManagement(sessionConfig->sessionConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .authorizeHttpRequests(auth-> auth.requestMatchers("/auth/**").permitAll()
+                        .anyRequest().authenticated());
         return httpSecurity.build();
     }
 

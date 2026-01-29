@@ -1,6 +1,5 @@
 package com.todomanager.todos.Service.ServiceImplementation;
 
-import com.todomanager.todos.DTO.AuthDTO;
 import com.todomanager.todos.DTO.ProfileDTO;
 import com.todomanager.todos.DTO.ProfileResponseDTO;
 import com.todomanager.todos.Entity.ProfileEntity;
@@ -8,7 +7,6 @@ import com.todomanager.todos.Repository.ProfileRepository;
 import com.todomanager.todos.Service.ServiceInterface.ProfileService;
 import org.modelmapper.ModelMapper;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,37 +15,13 @@ import java.util.List;
 @Service
 public class ProfileServiceImp implements ProfileService {
     private final ProfileRepository profileRepository;
-    private final PasswordEncoder passwordEncoder;
+    private final ModelMapper modelMapper;
 
-    public ProfileServiceImp(ProfileRepository profileRepository, PasswordEncoder passwordEncoder) {
+    public ProfileServiceImp(ProfileRepository profileRepository, ModelMapper modelMapper) {
         this.profileRepository = profileRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.modelMapper=modelMapper;
     }
-
-    ModelMapper modelMapper = new ModelMapper();
-
-    @Override
-    public ProfileResponseDTO registerProfile(ProfileDTO profileDTO){
-    ProfileEntity profile = modelMapper.map(profileDTO, ProfileEntity.class);
-    profile.setPassword(passwordEncoder.encode(profileDTO.getPassword()));
-    ProfileEntity newprofile = profileRepository.save(profile);
-    return modelMapper.map(newprofile, ProfileResponseDTO.class);
-    }
-
-    @Override
-    public ProfileResponseDTO loginProfile(AuthDTO authDTO){
-        ProfileEntity profile = profileRepository.findByEmailAndPassword(authDTO.getEmail(), authDTO.getPassword());
-
-        return modelMapper.map(profile,ProfileResponseDTO.class);
-
-    }
-
-
-
-
-
-
-
+    
     @Override
     public ProfileResponseDTO getCurrentProfile(Long profileId){
         ProfileEntity profile= profileRepository.findById(profileId)
@@ -87,11 +61,8 @@ public class ProfileServiceImp implements ProfileService {
     @Override
     public ProfileDTO toDto(ProfileEntity profile) {
         ProfileDTO profileDTO = new ProfileDTO();
-        profileDTO.setId(profile.getId());
         profileDTO.setName(profile.getName());
-        profileDTO.setEmail(profile.getEmail());
-        profileDTO.setCreatedAt(profile.getCreatedAt());
-        profileDTO.setUpdateAt(profile.getUpdateAt());
+        profileDTO.setEmail(profile.getUsername());
     return profileDTO;
     }
 

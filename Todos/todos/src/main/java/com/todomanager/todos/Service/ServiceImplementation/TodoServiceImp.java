@@ -18,12 +18,12 @@ public class TodoServiceImp implements TodoService {
 
     private ProfileRepository profileRepo;
     private TodoRepository todoRepo;
+    private ModelMapper modelMapper;
 
-    private ModelMapper modelMapper = new ModelMapper();
-
-    public TodoServiceImp(ProfileRepository profileRepo, TodoRepository todoRepo) {
+    public TodoServiceImp(ProfileRepository profileRepo, TodoRepository todoRepo, ModelMapper modelMapper) {
         this.profileRepo = profileRepo;
         this.todoRepo = todoRepo;
+        this.modelMapper = modelMapper;
     }
 
     @Transactional
