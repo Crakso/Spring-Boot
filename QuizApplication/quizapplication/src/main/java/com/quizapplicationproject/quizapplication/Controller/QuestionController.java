@@ -3,8 +3,6 @@ package com.quizapplicationproject.quizapplication.Controller;
 import com.quizapplicationproject.quizapplication.Entity.Question;
 import com.quizapplicationproject.quizapplication.Service.QuestionService;
 import lombok.RequiredArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
