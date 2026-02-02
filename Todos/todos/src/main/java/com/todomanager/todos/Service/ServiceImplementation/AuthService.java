@@ -29,7 +29,7 @@ public class AuthService {
     }
 
     public SignupResponseDTO signupProfile(ProfileDTO profile){
-        ProfileEntity profileEntity = profileRepository.findByEmail(profile.getEmail()).orElseThrow(null);
+        ProfileEntity profileEntity = profileRepository.findByEmail(profile.getEmail()).orElse(null);
         if(profileEntity!=null) throw new IllegalArgumentException("Email already exists.");
         profile.setPassword(passwordEncoder.encode(profile.getPassword()));
         ProfileEntity profileDetails = profileRepository.save(modelMapper.map(profile,ProfileEntity.class));
