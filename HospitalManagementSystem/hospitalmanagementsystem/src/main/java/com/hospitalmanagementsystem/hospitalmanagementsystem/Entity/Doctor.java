@@ -6,6 +6,7 @@ import lombok.ToString;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
 public class Doctor {
 
 
@@ -22,5 +23,5 @@ public class Doctor {
     @Column(nullable = false, unique = true, length = 100)
     private String email;
 
-    private Set<Department> departments = new HashSet<>();
+//    private Set<Department> departments = new HashSet<>();
 }

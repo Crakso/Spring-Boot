@@ -34,5 +34,5 @@ public class Insurance {
 
     @OneToOne
     @JoinColumn(name = "patient-insurance-id" ,nullable = false)
-    private Long patient;
+    private Patient patient;
 }

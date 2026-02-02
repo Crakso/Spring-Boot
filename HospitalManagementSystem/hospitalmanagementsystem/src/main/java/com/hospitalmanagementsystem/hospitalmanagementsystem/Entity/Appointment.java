@@ -28,8 +28,8 @@ public class Appointment {
     @ToString.Exclude   // patient try to find appointment and appointment again find patient stack overflow error that why exclude patient.
     private Patient patient;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @ToString.Exclude
-    @JoinColumn(nullable = false)
-    private Doctor doctor;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @ToString.Exclude
+//    @JoinColumn(nullable = false)
+//    private Doctor doctor;
 }
