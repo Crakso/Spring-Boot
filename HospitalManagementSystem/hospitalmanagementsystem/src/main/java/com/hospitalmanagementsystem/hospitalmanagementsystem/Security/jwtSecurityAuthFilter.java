@@ -28,10 +28,10 @@ public class jwtSecurityAuthFilter extends OncePerRequestFilter {
 
         final String requestHeader = request.getHeader("Authorization");
 
-        if(requestHeader==null || requestHeader.isBlank()) {
+        if(requestHeader == null || requestHeader.isBlank()) {
            filterChain.doFilter(request,response);
+           return;
         }
-
         String token = requestHeader.split("Bearer ")[1];
         String username = authUtil.validateTokenAndGetUsername(token);
             if(username!=null && SecurityContextHolder.getContext().getAuthentication()==null){

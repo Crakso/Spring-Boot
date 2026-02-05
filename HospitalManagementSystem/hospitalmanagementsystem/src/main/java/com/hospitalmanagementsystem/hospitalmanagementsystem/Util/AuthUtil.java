@@ -1,10 +1,12 @@
 package com.hospitalmanagementsystem.hospitalmanagementsystem.Util;
 
+import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.ProviderType;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -40,5 +42,40 @@ public class AuthUtil {
                 .getPayload();
 
         return claims.getSubject();
+    }
+
+    public ProviderType getProviderTypeFromRegistrationId(String registrationId) {
+        return switch (registrationId.toLowerCase()){
+            case "google"-> ProviderType.GOOGLE;
+            case "github"-> ProviderType.GITHUB;
+            default -> throw new IllegalArgumentException("unsupported Oauth2 provider type"+ registrationId);
+        };
+    }
+
+    public String getProviderIdFromOauth2User(OAuth2User user, String registrationId) {
+       String providerId = switch(registrationId.toLowerCase()){
+            case "google"-> user.getAttribute("sub");
+            case "github"-> user.getAttribute("id").toString();
+            default -> throw new IllegalArgumentException("unsupported Oauth2 provider id."+ registrationId);
+        };
+       if(providerId==null||providerId.isBlank()) {
+
+       throw new IllegalArgumentException("unable to determine provider id."+registrationId);
+       }
+           return providerId;
+
+
+    }
+
+    public String findUsernameFromOauth2User(OAuth2User user, String registrationId, String providerId) {
+        String email = user.getAttribute("email");
+        if(email!=null||!email.isBlank()){
+            return email;
+        }
+        return switch (registrationId.toLowerCase()){
+            case "google" -> user.getAttribute("sub");
+            case "github" -> user.getAttribute("id");
+            default -> providerId;
+        };
     }
 }

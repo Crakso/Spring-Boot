@@ -1,5 +1,6 @@
 package com.hospitalmanagementsystem.hospitalmanagementsystem.Entity;
 
+import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.ProviderType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -24,6 +25,11 @@ public class User implements UserDetails {
     @JoinColumn(unique = true)
     private String username;
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private ProviderType providerType;
+
+    private String providerId;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
