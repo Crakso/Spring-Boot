@@ -1,12 +1,12 @@
 package com.hospitalmanagementsystem.hospitalmanagementsystem.Service;
 
-import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.LogInRequest;
-import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.LogInResponse;
-import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.ProviderType;
-import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.SignUpResponse;
+import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Patient;
+import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.*;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.User;
+import com.hospitalmanagementsystem.hospitalmanagementsystem.Repository.PatientRepository;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Repository.UserRepository;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Util.AuthUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +21,9 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
+import java.util.Set;
+
 @Service
 @RequiredArgsConstructor
 public class AuthService {
@@ -29,6 +32,7 @@ public class AuthService {
     private final AuthUtil authUtil;
     private final UserRepository userRepo;
     private final PasswordEncoder passwordEncoder;
+    private final PatientRepository patientRepository;
 
 
     public ResponseEntity<LogInResponse> logInUser(LogInRequest logInRequest) {
@@ -50,21 +54,32 @@ public class AuthService {
         return new ResponseEntity<>(new LogInResponse(), HttpStatus.BAD_REQUEST);
     }
 
-    public User signupInternal(LogInRequest signupRequest, ProviderType providerType, String providerId){
+    @Transactional
+    public User signupInternal(SignUpRequest signupRequest, ProviderType providerType, String providerId){
 
         User user = User.builder()
                 .username(signupRequest.getUsername())
                 .providerType(providerType)
                 .providerId(providerId)
+                .roles(Set.of(
+                        RoleType.PATIENT
+                ))
                 .build();
         if (providerType==ProviderType.EMAIL){
             user.setPassword(passwordEncoder.encode(signupRequest.getPassword()));
         }
-        return userRepo.save(user);
+        userRepo.save(user);
+        patientRepository.save(
+                Patient.builder()
+                .name(signupRequest.getName())
+                .user(user)
+                .email(user.getUsername()).build()
+        );
+        return user;
     }
 
 
-    public ResponseEntity<SignUpResponse> signUp(LogInRequest signupRequest){
+    public ResponseEntity<SignUpResponse> signUp(SignUpRequest signupRequest){
         try{
             User user = (User) userRepo.findByUsername(signupRequest.getUsername()).orElse(null);
             if(user==null){
@@ -91,13 +106,15 @@ public class AuthService {
 
         String email = user.getAttribute("email");
 
+        String name = user.getAttribute("name");
+
         User getuserbyemail = userRepo.findByUsername(email).orElse(null);
 
         if(userExist==null || getuserbyemail==null){
             //signup first. user not exist into the database.
 
            String username = authUtil.findUsernameFromOauth2User(user,registrationId,providerId);
-            userExist = signupInternal(new LogInRequest(username,null), providerType,providerId);
+            userExist = signupInternal(new SignUpRequest(name,username,null), providerType,providerId);
         }
 
         else if(userExist!=null){

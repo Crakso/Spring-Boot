@@ -24,6 +24,10 @@ public class Patient {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @OneToOne
+    @MapsId
+    private User user;
+
     @Column(nullable = false, length = 40)
     private String name;
 

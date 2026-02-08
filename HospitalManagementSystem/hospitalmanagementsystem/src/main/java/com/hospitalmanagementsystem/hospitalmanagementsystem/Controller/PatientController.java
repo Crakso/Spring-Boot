@@ -1,8 +1,7 @@
 package com.hospitalmanagementsystem.hospitalmanagementsystem.Controller;
 
-import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Patient;
-import com.hospitalmanagementsystem.hospitalmanagementsystem.Service.PatientService;
-import lombok.Getter;
+import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Doctor;
+import com.hospitalmanagementsystem.hospitalmanagementsystem.Service.DoctorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,16 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin")
 @RequiredArgsConstructor
+@RequestMapping("/public")
 public class PatientController {
 
-    private final PatientService patientService;
+    private final DoctorService doctorService;
 
-
-    @GetMapping("get-patients")
-    public ResponseEntity<List<Patient>> getAllPatient(){
-        return patientService.getAllPatients();
+    @GetMapping("get-doctors")
+    public ResponseEntity<List<Doctor>> getAllDoctor(){
+        return doctorService.getAllDoctors();
     }
 
 }

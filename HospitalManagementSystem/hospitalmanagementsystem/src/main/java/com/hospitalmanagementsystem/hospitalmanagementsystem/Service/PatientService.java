@@ -5,6 +5,8 @@ import com.hospitalmanagementsystem.hospitalmanagementsystem.Repository.PatientR
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -12,9 +14,12 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class PatientService {
     private final PatientRepository patientRepo;
 
+
+    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR') || hasAuthority('patient:read')")
     public ResponseEntity<List<Patient>> getAllPatients() {
         try{
             List<Patient> patients = patientRepo.findAll();
