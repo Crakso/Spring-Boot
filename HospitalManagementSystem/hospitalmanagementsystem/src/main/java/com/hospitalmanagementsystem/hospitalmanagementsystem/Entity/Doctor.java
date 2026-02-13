@@ -31,6 +31,4 @@ public class Doctor {
 
     @Column(nullable = false, unique = true, length = 100)
     private String email;
-
-//    private Set<Department> departments = new HashSet<>();
 }

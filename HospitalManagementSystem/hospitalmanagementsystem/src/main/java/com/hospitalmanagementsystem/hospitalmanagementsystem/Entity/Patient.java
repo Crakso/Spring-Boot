@@ -49,6 +49,7 @@ public class Patient {
     @OneToOne(mappedBy = "patient")
     private Insurance insurance;
 
+    @OneToMany(mappedBy = "patient")
     private List<Long> appointment;
 
 

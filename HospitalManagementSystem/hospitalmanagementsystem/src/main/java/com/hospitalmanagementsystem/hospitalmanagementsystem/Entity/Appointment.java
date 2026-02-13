@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "appointment_tbl")
 @Builder
 public class Appointment {
 
@@ -24,12 +25,11 @@ public class Appointment {
     private String reason;
 
     @ManyToOne
-    @JoinColumn(name = "patient_id", nullable = false) // Patient is required and not nullable.
-    @ToString.Exclude   // patient try to find appointment and appointment again find patient stack overflow error that why exclude patient.
+    @JoinColumn(name = "patient_id", nullable = false)
     private Patient patient;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @ToString.Exclude
-//    @JoinColumn(nullable = false)
-//    private Doctor doctor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @ToString.Exclude
+    @JoinColumn(nullable = false)
+    private Doctor doctor;
 }
