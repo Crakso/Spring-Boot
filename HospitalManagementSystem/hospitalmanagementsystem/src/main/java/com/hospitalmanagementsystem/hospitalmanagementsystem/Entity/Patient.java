@@ -46,11 +46,11 @@ public class Patient {
     @Enumerated(EnumType.STRING)
     private BloodGroupType bloodGroup;
 
-    @OneToOne(mappedBy = "patient")
+    @OneToOne(mappedBy = "patient",cascade = {CascadeType.MERGE,CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private Insurance insurance;
 
-    @OneToMany(mappedBy = "patient")
-    private List<Long> appointment;
+    @OneToMany(mappedBy = "patient",cascade = {CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Appointment> appointment;
 
 
 }
