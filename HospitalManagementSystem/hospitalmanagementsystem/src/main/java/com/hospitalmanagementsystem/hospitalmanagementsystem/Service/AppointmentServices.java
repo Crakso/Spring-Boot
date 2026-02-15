@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@EnableMethodSecurity
 public class AppointmentServices {
 
     private final DoctorRepository doctorRepository;
@@ -29,54 +31,60 @@ public class AppointmentServices {
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> bookAppointment(Appointment appointment, Long patientId, Long doctorId) {
-
         try {
-
             Patient patient = patientRepository.findById(patientId).orElse(null);
             Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
 
             if (patient == null || doctor == null) {
-                return new ResponseEntity<>("Patient not found", HttpStatus.NOT_FOUND);
-            }
+                return new ResponseEntity<>("Patient not found", HttpStatus.NOT_FOUND);}
+
             appointment.setPatient(patient);
             appointment.setDoctor(doctor);
-
             patient.getAppointment().add(appointment);
-
             Appointment newAppointment = appointmentRepository.save(appointment);
+
             return new ResponseEntity<>("Appointment booked successfully with Id:" + newAppointment.getId(), HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return new ResponseEntity<>("Failed to book an appointment", HttpStatus.BAD_REQUEST);
     }
 
-
-    @Transactional
-    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR') || hasAuthority('appointment:delete')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'DOCTOR') OR hasAuthority('appointment:delete')")
     public ResponseEntity<String> cancleAppointment(Long appointmentId){
         try {
             appointmentRepository.deleteById(appointmentId);
-//           Optional<Patient> patient =  patientRepository.findByAppointentId(appointmentId);
 
             return new ResponseEntity<>("Appointment is deleted successfully", HttpStatus.NO_CONTENT);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         return new ResponseEntity<>("Failed to delete appointment",HttpStatus.BAD_REQUEST);
     }
 
     @Transactional
-    @PreAuthorize("hasAnyRole('ADMIN','DOCTOR') || hasAuthority('appointment:write')")
-    public ResponseEntity<String> reassignAppointmentToNewDoctor(Long appointmentId, Long DoctorId){
-        Appointment appointment = appointmentRepository.findById(appointmentId).orElse(null);
-        Doctor doctor = doctorRepository.findById(DoctorId).orElse(null);
+    @PreAuthorize("hasAnyRole('ADMIN') OR hasAuthority('appointment:write') OR #doctorId == Authentication.principal.id")
+    public ResponseEntity<String> reassignAppointmentToNewDoctor(Long appointmentId, Long doctorId){
+        try {
+            Appointment appointment = appointmentRepository.findById(appointmentId).orElse(null);
+            Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
 
-    if(appointment==null||doctor ==null) throw new IllegalArgumentException("Invalid information for reassignAppointment.");
+            if (appointment == null || doctor == null)
+                throw new IllegalArgumentException("Invalid information for reassignAppointment.");
 
-        appointment.setDoctor(doctor);
-        return new ResponseEntity<>("reassing successfully.",HttpStatus.OK);
+            appointment.setDoctor(doctor);
+
+            return new ResponseEntity<>("reassing successfully.", HttpStatus.OK);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ResponseEntity<>("Reassigning failed",HttpStatus.BAD_REQUEST);
     }
 
 }

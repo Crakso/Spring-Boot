@@ -12,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -38,6 +40,7 @@ public class DoctorService {
     }
 
     @Transactional
+    @PreAuthorize("hasRole('ADMIN') OR hasAuthority('user:manage')")
     public ResponseEntity<String> promoteToDoctor(DoctorRegisterDTO doctor, Long doctorId) {
         try {
             User user = userRepository.findById(doctorId).orElse(null);
@@ -60,5 +63,25 @@ public class DoctorService {
             e.printStackTrace();
         }
         return new ResponseEntity<>("Something went wrong.", HttpStatus.BAD_REQUEST);
+    }
+
+    @Transactional
+    @PreAuthorize("hasRole('ADMIN') OR hasAuthority('user:manage')")
+    public ResponseEntity<String> removeDoctor(Long doctorId){
+        try{
+            if(!doctorRepository.existsById(doctorId)) throw new UsernameNotFoundException("Doctor not exist with this Id "+doctorId);
+
+            doctorRepository.deleteById(doctorId);
+
+            User user = userRepository.findById(doctorId).orElse(null);
+
+            if(user==null) throw new UsernameNotFoundException("user not exist with this username");
+
+            user.getRoles().remove(RoleType.DOCTOR);
+            return new ResponseEntity<>("Doctor is deleted successfully.",HttpStatus.NO_CONTENT);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
     }
 }
