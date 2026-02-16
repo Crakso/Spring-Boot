@@ -1,9 +1,7 @@
 package com.hospitalmanagementsystem.hospitalmanagementsystem.Service;
 
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Patient;
-import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.SignUpRequest;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.UpdateRequestDTO;
-import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.User;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Repository.PatientRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class PatientService {
+
     private final PatientRepository patientRepo;
 
 

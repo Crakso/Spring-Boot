@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Builder
 public class Insurance {
 
@@ -33,6 +34,7 @@ public class Insurance {
     private LocalDateTime createdAt;
 
     @OneToOne
+    @ToString.Exclude
     @JoinColumn(name = "patient-insurance-id" ,nullable = false)
     private Patient patient;
 }

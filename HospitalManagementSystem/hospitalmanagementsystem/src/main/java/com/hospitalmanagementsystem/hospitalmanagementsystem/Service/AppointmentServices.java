@@ -6,7 +6,6 @@ import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Patient;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Repository.AppointmentRepository;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Repository.DoctorRepository;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Repository.PatientRepository;
-import com.hospitalmanagementsystem.hospitalmanagementsystem.Repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,9 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -39,8 +35,7 @@ public class AppointmentServices {
                 return new ResponseEntity<>("Patient not found", HttpStatus.NOT_FOUND);}
 
             appointment.setPatient(patient);
-            appointment.setDoctor(doctor);
-            patient.getAppointment().add(appointment);
+            appointment.setDoctor(doctor);;
             Appointment newAppointment = appointmentRepository.save(appointment);
 
             return new ResponseEntity<>("Appointment booked successfully with Id:" + newAppointment.getId(), HttpStatus.OK);

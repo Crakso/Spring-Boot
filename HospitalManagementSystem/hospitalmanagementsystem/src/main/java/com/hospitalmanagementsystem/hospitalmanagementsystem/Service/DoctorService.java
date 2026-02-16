@@ -84,4 +84,19 @@ public class DoctorService {
         }
         return new ResponseEntity<>("Something went wrong", HttpStatus.BAD_REQUEST);
     }
+
+
+    @PreAuthorize("hasRole('ADMIN') OR #doctorId == Authentication.principal.id")
+    public ResponseEntity<Doctor> getDoctorById(Long doctorId) {
+        try {
+            Doctor doctor = doctorRepository.findById(doctorId).orElse(null);
+            if (doctor == null) {
+                return new ResponseEntity<>(new Doctor(), HttpStatus.NOT_FOUND);
+            }
+            return new ResponseEntity<>(doctor, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(new Doctor(), HttpStatus.BAD_REQUEST);
+    }
 }
