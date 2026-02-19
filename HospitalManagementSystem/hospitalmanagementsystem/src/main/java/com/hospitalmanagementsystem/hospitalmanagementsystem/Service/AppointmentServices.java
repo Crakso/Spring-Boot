@@ -73,7 +73,7 @@ public class AppointmentServices {
 
             appointment.setDoctor(doctor);
 
-            return new ResponseEntity<>("reassing successfully.", HttpStatus.OK);
+            return new ResponseEntity<>("reassign successfully.", HttpStatus.OK);
 
         } catch (Exception e) {
             e.printStackTrace();

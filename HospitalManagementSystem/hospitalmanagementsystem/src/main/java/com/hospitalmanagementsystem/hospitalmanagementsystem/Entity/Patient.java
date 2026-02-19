@@ -5,6 +5,7 @@ import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.BloodGr
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -52,5 +53,6 @@ public class Patient {
     @OneToMany(mappedBy = "patient",cascade = {CascadeType.REMOVE}, orphanRemoval = true)
     private List<Appointment> appointment;
 
-
+    @UpdateTimestamp
+    private LocalDateTime updatedAt;
 }

@@ -58,12 +58,12 @@ public class AdminController {
     }
 
     @DeleteMapping("cancel-appointment/{appointmentId}")
-    public ResponseEntity<String> cancleAppointment(@PathVariable Long appointmentId){
+    public ResponseEntity<String> cancelAppointment(@PathVariable Long appointmentId){
         return appointmentServices.cancleAppointment(appointmentId);
     }
 
-    @PutMapping("assingDoc/{appointmentId}/{doctorId}")
-    public ResponseEntity<String> ressignAppointmentToNewDoctor(@PathVariable Long appointmentId,@PathVariable Long doctorId){
+    @PutMapping("assignDoc/{appointmentId}/{doctorId}")
+    public ResponseEntity<String> reassignAppointmentToNewDoctor(@PathVariable Long appointmentId,@PathVariable Long doctorId){
         return appointmentServices.reassignAppointmentToNewDoctor(appointmentId,doctorId);
     }
 
@@ -99,7 +99,12 @@ public class AdminController {
     }
 
 
+// System Monitoring.
 
+//    @GetMapping("dashboard/statistics")
+//    public ResponseEntity<Object> dashboardDetails(){
+//
+//    }
 
 
 

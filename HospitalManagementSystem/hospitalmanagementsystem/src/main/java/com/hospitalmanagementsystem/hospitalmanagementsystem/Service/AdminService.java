@@ -20,7 +20,6 @@ public class AdminService {
         this.userRepository = userRepository;
     }
 
-
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> promoteUserToAdmin(Long id) {
         try {
@@ -34,6 +33,7 @@ public class AdminService {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> demoteUserFromAdmin(Long id) {
         try{
             User user = userRepository.findById(id).orElse(null);

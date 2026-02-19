@@ -33,7 +33,7 @@ public class Insurance {
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @ToString.Exclude
     @JoinColumn(name = "patient-insurance-id" ,nullable = false)
     private Patient patient;

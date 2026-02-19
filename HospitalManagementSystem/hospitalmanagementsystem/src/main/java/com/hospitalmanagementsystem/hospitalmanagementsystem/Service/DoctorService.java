@@ -1,6 +1,7 @@
 package com.hospitalmanagementsystem.hospitalmanagementsystem.Service;
 
 
+import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Appointment;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Doctor;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.DoctorRegisterDTO;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.RoleType;
@@ -14,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -98,5 +101,11 @@ public class DoctorService {
             e.printStackTrace();
         }
         return new ResponseEntity<>(new Doctor(), HttpStatus.BAD_REQUEST);
+    }
+
+    public ResponseEntity<List<Appointment>> getAllAppointments() {
+//        Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
+//        User user = (User) authentication.getPrincipal();
+        return null;
     }
 }
