@@ -2,12 +2,15 @@ package com.hospitalmanagementsystem.hospitalmanagementsystem.Util;
 
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.ProviderType;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.User;
+import com.hospitalmanagementsystem.hospitalmanagementsystem.Repository.UserRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -18,6 +21,11 @@ public class AuthUtil {
 
     @Value("${jwt.securetKey}")
     private String secretKey;
+    private final UserRepository userRepository;
+
+    public AuthUtil(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     private SecretKey getKey(){
         return Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
@@ -77,5 +85,12 @@ public class AuthUtil {
             case "github" -> user.getAttribute("id");
             default -> providerId;
         };
+    }
+
+
+    public User getCurrentUser(){
+        Authentication authentication =  SecurityContextHolder.getContext().getAuthentication();
+        return userRepository.findByUsername(authentication.getName()).orElse(null);
+
     }
 }
