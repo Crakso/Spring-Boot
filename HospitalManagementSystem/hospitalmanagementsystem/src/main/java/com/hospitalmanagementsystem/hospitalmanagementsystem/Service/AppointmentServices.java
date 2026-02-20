@@ -14,6 +14,10 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @EnableMethodSecurity
@@ -80,6 +84,32 @@ public class AppointmentServices {
         }
 
         return new ResponseEntity<>("Reassigning failed",HttpStatus.BAD_REQUEST);
+    }
+
+
+
+
+    public ResponseEntity<List<Appointment>> getAllAppointments(Doctor doctor) {
+        try {
+            List<Appointment> AppointmentsList = appointmentRepository.findAllAppointments(doctor);
+            return new ResponseEntity<>(AppointmentsList, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResponseEntity<List<Appointment>> getAppointmentBetweenDate(Doctor doctor, LocalDateTime startAt, LocalDateTime endAt){
+        try{
+            List<Appointment> allAppointmentBtwDate = appointmentRepository.findByDoctorAndCreatedAtBetween(doctor,startAt,endAt);
+            return new ResponseEntity<>(allAppointmentBtwDate,HttpStatus.OK);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public ResponseEntity<List<Appointment>> getTop5Appointment(Doctor doctor ){
+        List<Appointment> appointment = appointmentRepository.findTop5ByDoctorOrderByCreatedAtDesc(doctor);
+        return new ResponseEntity<>(appointment,HttpStatus.OK);
     }
 
 }

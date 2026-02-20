@@ -10,10 +10,12 @@ import com.hospitalmanagementsystem.hospitalmanagementsystem.Service.Appointment
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Service.DoctorService;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Service.PatientService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/admin")
@@ -101,10 +103,15 @@ public class AdminController {
 
 // System Monitoring.
 
-//    @GetMapping("dashboard/statistics")
-//    public ResponseEntity<Object> dashboardDetails(){
-//
-//    }
+    @GetMapping("dashboard/statistics")
+    public ResponseEntity<Map<String, Object>> dashboardDetails(){
+        return new ResponseEntity<>(Map.of(
+                "Total number of Patients", new Object(),
+                "Total number of Doctors", new Object(),
+                "Total number of Appointments",new Object()
+
+        ), HttpStatus.OK);
+    }
 
 
 

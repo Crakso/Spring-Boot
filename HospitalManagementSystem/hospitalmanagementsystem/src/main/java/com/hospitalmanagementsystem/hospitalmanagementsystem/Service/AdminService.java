@@ -3,6 +3,7 @@ package com.hospitalmanagementsystem.hospitalmanagementsystem.Service;
 
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Type.RoleType;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.User;
+import com.hospitalmanagementsystem.hospitalmanagementsystem.Repository.DoctorRepository;
 import com.hospitalmanagementsystem.hospitalmanagementsystem.Repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,14 +11,19 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+
 @Service
 @EnableMethodSecurity
 public class AdminService {
 
     private final UserRepository userRepository;
+    private final DoctorRepository doctorRepository;
 
-    public AdminService(UserRepository userRepository) {
+    public AdminService(UserRepository userRepository,
+                        DoctorRepository doctorRepository) {
         this.userRepository = userRepository;
+        this.doctorRepository = doctorRepository;
     }
 
     @PreAuthorize("hasRole('ADMIN')")

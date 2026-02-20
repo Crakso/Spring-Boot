@@ -5,11 +5,14 @@ import com.hospitalmanagementsystem.hospitalmanagementsystem.Entity.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
+@Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
     @Query("SELECT COUNT(a) FROM Appointment a")
@@ -18,13 +21,14 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     @Query("SELECT a FROM Appointment a WHERE a.doctor=:doctor")
     List<Appointment> findAllAppointments(@Param("doctor") Doctor doctor);
 
-//    @Query("SELECT a FROM Appointment a WHERE a.createdAt>=CURRENT_DATE AND a.createdAt<CURRENT_DATE+1")
-//    List<Appointment> getTodayAppointments();
-//
-//    @Query("SELECT COUNT(a) FROM Appointment a WHERE a.createdAt>=CURRENT_DATE AND a.createdAt<CURRENT_DATE+1")
-//    BigDecimal countTodayAppointments();
+    List<Appointment> findTop5ByDoctorOrderByCreatedAtDesc(Doctor doctor);
 
-    List<Appointment> findTop5ByDoctorOrderByDateDesc(Doctor doctor);
+    List<Appointment> findByDoctorAndCreatedAtBetween(Doctor doctor, LocalDateTime startDate, LocalDateTime endDate);
 
-    List<Appointment> findByDoctorAndDateBetween(Doctor doctor, LocalDate startDate, LocalDate endDate);
+    @Query("SELECT COUNT(a) FROM Appointment a WHERE FUNCTION('DATE', a.createdAt) = CURRENT_DATE")
+    BigDecimal countAllAppointmentRegisteredToday();
+
+    @Query("SELECT a FROM Appointment a WHERE FUNCTION('DATE', a.createdAt) = CURRENT_DATE")
+    List<Appointment> getAllAppointmentRegisteredToday();
+
 }

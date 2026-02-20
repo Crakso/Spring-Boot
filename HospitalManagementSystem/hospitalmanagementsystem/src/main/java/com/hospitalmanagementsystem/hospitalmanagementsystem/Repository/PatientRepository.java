@@ -6,15 +6,21 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 public interface PatientRepository extends JpaRepository<Patient,Long> {
 
-@Query("SELECT COUNT(p) FROM Patient p")
-BigDecimal totalNoOfPatient();
+    @Query("SELECT COUNT(p) FROM Patient p")
+    BigDecimal totalNoOfPatient();
+
+    @Query("SELECT p FROM Patient p WHERE FUNCTION('DATE', p.createdAt) = CURRENT_DATE")
+    List<Patient> getAllPatientsArrivedToday();
+
+//    select u from User u where u.timestamp > date_trunc('day', now());
+
+    @Query("SELECT COUNT(p) FROM Patient p WHERE FUNCTION('DATE', p.createdAt) = CURRENT_DATE")
+    BigDecimal countAllPatientsArrivedToday();
 
 //@Query()
 //List<Patient> getPatientsBetweenDate(LocalDateTime from, LocalDateTime to);

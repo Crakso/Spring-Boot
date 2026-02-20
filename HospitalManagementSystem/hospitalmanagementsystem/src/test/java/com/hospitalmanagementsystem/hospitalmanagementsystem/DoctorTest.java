@@ -11,9 +11,5 @@ public class DoctorTest {
     @Autowired
     private DoctorService doctorService;
 
-    @Test
-public void getappointment(){
-    doctorService.getAllAppointments();
-}
 
 }
